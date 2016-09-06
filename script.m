@@ -13,6 +13,8 @@ for x = 1:150
     end
 end
 
+% added a comment
+
 k = 3;
 
 irisWork(:,1) = irisWork(:,1) - min(iris(:,1)) + 1;
