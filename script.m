@@ -50,15 +50,17 @@ virginica = descSet(101:150,:);
 
 data = 1:50;
 data = data(randperm(50));
-sentosa = sentosa(data, :);
+sentosa = sentosa(data,:);
 data = data(randperm(50));
-verisicolor = verisicolor(data, :);
+verisicolor = verisicolor(data,:);
 data = data(randperm(50));
-virginica = virginica(data, :);
+virginica = virginica(data,:);
 
-sentosaTrain = sentosa(1:25, :);
-sentosaTest = sentosa(26:50, :);
-verisicolorTrain = verisicolor(1:25, :);
-verisicolorTest = verisicolor(26:50, :);
-virginicaTrain = virginica(1:25, :);
-virginicaTest = virginica(26:50, :);
+sentosaTrain = sentosa(1:25,:);
+sentosaTest = sentosa(26:50,:);
+
+verisicolorTrain = verisicolor(1:25,:);
+verisicolorTest = verisicolor(26:50,:);
+
+virginicaTrain = virginica(1:25,:);
+virginicaTest = virginica(26:50,:);
