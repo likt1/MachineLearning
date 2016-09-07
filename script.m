@@ -1,4 +1,4 @@
-clear all; clc; load fisheriris.mat;
+clear all; clc; load fisheriris.mat; rng shuffle;
 
 iris = meas.*10;
 irisWork = iris;
