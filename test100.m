@@ -27,8 +27,10 @@ function [accuracies] = test100()
         hist(accuracies(:,3));
         title(sprintf('k = %d : Verginica', j));
         subplot(2,2,4)
-        hist(mean(accuracies(:,:)));
+        bar(mean(accuracies(:,:)));
         title(sprintf('k = %d : Total', j));
+        flowers={'Sentosa'; 'Versicolor'; 'Virginica' };
+        set(gca,'xticklabel',flowers)
 
     end
 end

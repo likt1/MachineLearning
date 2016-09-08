@@ -17,13 +17,11 @@ function [results] = test(k)
     
     results = ones(numTest, 3); % init all values to pass
     
-    %% Testing
-    % if any attribute does not have a value that exists in the
-    % model list, fail
-            
     % sentosa testing
     for t = 1:numTest 
         for a = 1:numAttr
+            % if any attribute does not have a value that exists in the
+            % model list, fail
             results(t,1) = results(t,1) && any(sentosaTest(t,a) == sentosaList{a});
         end
     end
