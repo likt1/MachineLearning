@@ -9,26 +9,31 @@
 %  verisicolorTest, verginicaTest]
 
 function [accuracies] = test100()
-    rng shuffle
     % Create vector of 0's
     accuracies = zeros(100,3);
-    for j = 9
+    for j = 3:2:9
         for i = 1:100
+            rng shuffle;
             accuracies(i,:) = mean(test(j));
         end
+       
+        
         figure();
         subplot(2,2,1)
         hist(accuracies(:,1));
-        title(sprintf('k = %d : Sentosa', j));
+        title(sprintf('k = %d : Satosa', j));
+        
         subplot(2,2,2)
-        hist(accuracies(:,2));
-        title(sprintf('k = %d : Versicolor', j));
+        hist(accuracies(:,1));
+        title(sprintf('k = %d : V', j));
         subplot(2,2,3)
-        hist(accuracies(:,3));
-        title(sprintf('k = %d : Verginica', j));
+        hist(accuracies(:,1));
+        title(sprintf('k = %d', j));
         subplot(2,2,4)
-        hist(mean(accuracies(:,:)));
-        title(sprintf('k = %d : Total', j));
+        hist(accuracies(:,1));
+        title(sprintf('k = %d', j));
 
     end
+    
+    accuracies
 end

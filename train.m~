@@ -1,9 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Machine Learning %
-% Assignment 1 %
-% Team: Buckey James, Li Kendrick, Pradhan Praakrit %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %% training function
 %  k = number of bins
 %  returns [sentosaList, verisicolorList, verginicaList, sentosaTest,
@@ -25,7 +19,7 @@ function [sentosaList, verisicolorList, verginicaList, sentosaTest, ...
     end
 
     %%
-%     k = 3
+    k = 
     % Normalizing data set
     irisWork(:,1) = irisWork(:,1) - min(iris(:,1)) + 1;
     irisWork(:,2) = irisWork(:,2) - min(iris(:,2)) + 1;
