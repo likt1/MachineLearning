@@ -12,7 +12,7 @@ function [accuracies] = test100()
     rng shuffle
     % Create vector of 0's
     accuracies = zeros(100,3);
-    for j = 9
+    for j = 3:2:9
         for i = 1:100
             accuracies(i,:) = mean(test(j));
         end
