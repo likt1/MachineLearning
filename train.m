@@ -10,7 +10,8 @@
 %  verisicolorTest, verginicaTest]
 function [sentosaList, verisicolorList, verginicaList, sentosaTest, ...
     verisicolorTest, virginicaTest] = train(k)
-    load fisheriris.mat; rng shuffle;
+    load fisheriris.mat;
+    rng('shuffle');
     iris = meas.*10;
     irisWork = iris;
 
