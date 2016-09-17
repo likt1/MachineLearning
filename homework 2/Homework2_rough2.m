@@ -34,10 +34,10 @@ hT = sum(-pT.*log2(pT))
 % prob of each bin for column 1
 p = n1/sum(n1);
 
-c1bin = zeros(150,1);
+cbin = zeros(150,1);
 
 for x = 1:150
-    [y c1bin(x)] = min(abs(c1 - iris(x,1)));
+    [y cbin(x)] = min(abs(c1 - iris(x,1)));
 end
 
 % Column 2
