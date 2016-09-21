@@ -49,39 +49,19 @@ end
 % cbin discretized array
 cbin(:, 5) = iris(:, 5);
 
-% Assigning the descritized set into flowers 
 sentosa = cbin(1:50,:);
 verisicolor = cbin(51:100,:);
 virginica = cbin(101:150,:);
-
-% Randomizing
-data = 1:50;
-data = data(randperm(50));
-sentosa = sentosa(data, :);
-verisicolor = verisicolor(data, :);
-virginica = virginica(data, :);
-
-% Splitting into training and test data
-sentosaTrain = sentosa(1:25, :);
-sentosaTest = sentosa(26:50, :);
-verisicolorTrain = verisicolor(1:25, :);
-verisicolorTest = verisicolor(26:50, :);
-virginicaTrain = virginica(1:25, :);
-virginicaTest = virginica(26:50, :);
 
 sentosaList = {4};
 verisicolorList = {4};
 verginicaList = {4};
 
-% Creating the cell array that holds the bins that exist for each flower
 for i = 1:4
-    sentosaList{i} = unique(sentosaTrain(:, i)');
-    verisicolorList{i} = unique(verisicolorTrain(:, i)');
-    verginicaList{i} = unique(virginicaTrain(:, i)');
+    sentosaList{i} = unique(sentosa(:, i)');
+    verisicolorList{i} = unique(verisicolor(:, i)');
+    verginicaList{i} = unique(virginica(:, i)');
 end
-
-% Rebuild training array
-cbin = [sentosaTrain; verisicolorTrain; virginicaTrain];
 
 %------------------------------------
 % Calculate entropy for everything
@@ -94,7 +74,7 @@ binC2 = zeros(3, k);
 binC3 = zeros(3, k);
 binC4 = zeros(3, k);
 
-for x = 1:75
+for x = 1:150
     row = cbin(x,:);
     
     binC1(row(5), row(1)) = binC1(row(5), row(1)) + 1;
@@ -137,5 +117,4 @@ H(4) = sum(sum(Hc4, 1).*p(4,:));
 G(4) = hT - H(4);
 
 H % print
-G % gain
-
+G
