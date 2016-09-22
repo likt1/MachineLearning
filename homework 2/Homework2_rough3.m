@@ -4,7 +4,7 @@ Rough Draft
 %}
 clear all; clc;
 load fisheriris.mat;
-k = 3; % number of bins
+k = 5; % number of bins
 
 % Create iris graph
 %------------------------------------
@@ -60,13 +60,13 @@ virginicaTest = virginica(26:50, :);
 
 sentosaList = {4};
 verisicolorList = {4};
-verginicaList = {4};
+virginicaList = {4};
 
 % Creating the cell array that holds the bins that exist for each flower
 for i = 1:4
     sentosaList{i} = unique(sentosaTrain(:, i)');
     verisicolorList{i} = unique(verisicolorTrain(:, i)');
-    verginicaList{i} = unique(virginicaTrain(:, i)');
+    virginicaList{i} = unique(virginicaTrain(:, i)');
 end
 
 % Rebuild training array
@@ -107,21 +107,27 @@ end
 % Calculate entropy for everything
 %------------------------------------
 % please check
-% probability of Column X
-pC1 = [binC1(:,1)/a(1,1), binC1(:,2)/a(2,1), binC1(:,3)/a(3,1)];
-pC2 = [binC2(:,1)/a(1,2), binC2(:,2)/a(2,2), binC2(:,3)/a(3,2)];
-pC3 = [binC3(:,1)/a(1,3), binC3(:,2)/a(2,3), binC3(:,3)/a(3,3)];
-pC4 = [binC4(:,1)/a(1,4), binC4(:,2)/a(2,4), binC4(:,3)/a(3,4)];
+% probability of each flower per bin for each column X
+pC1 = [];
+pC2 = [];
+pC3 = [];
+pC4 = [];
+for x = 1:k
+    pC1 = [pC1, binC1(:,x)/sum(binC1(:,x))];
+    pC2 = [pC2, binC2(:,x)/sum(binC2(:,x))];
+    pC3 = [pC3, binC3(:,x)/sum(binC3(:,x))];
+    pC4 = [pC4, binC4(:,x)/sum(binC4(:,x))];
+end
 
 G = zeros(1,4); % Gain
 H = zeros(1,4); % Entropy
 
-% calculates the entropy for each flower per bin
+% calculates the entropy for the probabilities calculated previously
 Hc1 = -pC1.*log2(pC1);
-% removes NaN
+% removes NaN from entropy lists
 Hc1(isnan(Hc1)) = 0;
 % sum entropy values to get entropy per bin, then multiply
-% with probablity of bin in column to get weighted entropies,
+% with probablity of bin per column to get weighted entropies,
 % then sum entropies to get total column entropy
 H(1) = sum(sum(Hc1, 1).*p(:,1)');
 % take total entropy and subtract column entropy to get column gain
@@ -145,23 +151,52 @@ G(4) = hT - H(4);
 H % print
 G % gain
 
+% Generate column test order
+%------------------------------------
 tempG = G;
 testOrder = [];
 for n = 1:4
-    [v p] = max(tempG);
-    testOrder = [testOrder p];
-    tempG(p) = -1;
+    [v pos] = max(tempG);
+    testOrder = [testOrder pos];
+    tempG(pos) = -1;
 end
 
 testOrder
 
+% Do Tests
+%------------------------------------
+answer = [];
 for e = 1:75
     element = testArray(e,:);
     
-    cont = true;
+    exists = [1, 2, 3];
+    % If the bin number does not exist for that flower, set flower to 0
     for a = 1:4
-        if cont
+        if length(exists(exists > 0)) > 1
             number = element(testOrder(a));
+            if length(find(sentosaList{testOrder(a)} == number)) < 1
+                exists(exists == 1) = 0;
+            end
+        end
+        if length(exists(exists > 0)) > 1
+            if length(find(verisicolorList{testOrder(a)} == number)) < 1
+                exists(exists == 2) = 0;
+            end
+        end
+        if length(exists(exists > 0)) > 1
+            if length(find(virginicaList{testOrder(a)} == number)) < 1
+                exists(exists == 3) = 0;
+            end
         end
     end
+    
+    % If there is one answer, use it
+    if length(exists(exists > 0)) == 1
+        answer(e) = exists(exists > 0);
+    else % otherwise uncomfirmed
+        answer(e) = 0;
+    end
 end
+
+ % print answer
+answer'
