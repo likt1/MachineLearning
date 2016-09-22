@@ -6,7 +6,7 @@
 
 clear all; clc;
 load fisheriris.mat;
-k = 5; % number of bins
+k = 10; % number of bins
 % Create iris graph
 %-----------------------------------%
 iris = meas.*10;
@@ -80,41 +80,41 @@ for binnum = 1:k
     end
 end
 
-att_probBin
-
-% att1_probBin
-% att2_probBin
-% att3_probBin
-% att4_probBin
+att_probBin;
 
 % stuff = att1_probBin(1,:).*att2_probBin(2,:);
 % Prob_Flower_Att1 = Prob_bin_flower
 
-probVNM1 = [];
-
-flower1 = flowerTest(find(flowerTest(:,5) == 1),:);
-phi = ones(1,3);
-z = 1;
-% flowerTest
-for rows = 1:75
-    for column = 1:4
-        binnum = flowerTest(rows,column);
-        phi(z) = phi(z) * att_probBin(binnum,flowerTest(rows,5),column)
-        pause(1)
-        if rows > 25
-            z = z+1
+phi = ones(75,3);
+% count = 0;
+for sampleRow = 1:75
+    for flower = 1:3
+        for attributes = 1:4
+%         sampleRow
+%         attributes
+%          count = count + 1;
+%         if (mod(count-1,25) == 0)
+%             count = 1;
+%         end
+        binnum = flowerTest(sampleRow,attributes);
+        phi(sampleRow,flower) = phi(sampleRow,flower) * att_probBin(binnum,flower,attributes);
+%         pause(1)            
         end
-            
     end
 end
 
-phi
+% Optimized training set:there are equal amounts of each flower
+probvnb(:,1:3) = probSentosa * phi(:,1:3);
+% probvnb(:,2) = probVersicolor * phi(:,2);
+% probvnb(:,3) = probVirginica * phi(:,3);
 
+% Returns the max in each row. 
+% Compares the three flowers VNB and picks the largest
+% I gives us the column number at which its max
+[M I] = max(probvnb,[],2);
 
-
-
-
-
+% Comparing I with the actual flower values will give us accuracies
+accurate = sum(flowerTest(:,5) == I)
 
 
 
