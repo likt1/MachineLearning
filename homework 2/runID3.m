@@ -191,4 +191,6 @@ function answer = runID3(k)
             answer(e) = 0;
         end
     end
+    
+    answer = [answer' testArray(:,5)];
 end
