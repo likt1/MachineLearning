@@ -36,5 +36,37 @@ function result = analyzeID3
     end
     
     % Graph Results
-    % TODO
+    f = figure;
+    set(f,'name','Accuracies for ID3','numbertitle','off');
+    for y = 1:4
+        subplot(2,2,y);
+        p = bar(result(y,2:13), 0.6);
+        
+        % Reduce size of axis to get all labels to fit
+        %pos = get(gca,'Position');
+        %set(gca,'Position',[pos(1), .2, pos(3) .65])
+        
+        title(sprintf('k = %d',y*5));
+        
+        % Set X-Tick locations
+        Xt = 1:12;
+        Xl = [1 12];
+        set(gca,'XTick',Xt,'XLim',Xl);
+        
+        flowers={'Sentosa Min'; 'Sentosa Max'; 'Sentosa Avg'; ...
+            'Versicolor Min'; 'Versicolor Max'; 'Versicolor Avg'; ...
+            'Virginica Min'; 'Virginica Max'; 'Virginica Avg'; ...
+            'Total Min'; 'Total Max'; 'Total Avg'};
+        
+        ax = axis;    % Current axis limits
+        axis(axis);    % Set the axis limit modes (e.g. XLimMode) to manual
+        Yl = ax(3:4);  % Y-axis limits
+        % Place the text labels
+        t = text(Xt,Yl(1)*ones(1,length(Xt)),flowers);
+        set(t,'HorizontalAlignment','right','VerticalAlignment','top', ...
+              'Rotation',45);
+          
+        % Remove the default labels
+        set(gca,'XTickLabel','')
+    end
 end
