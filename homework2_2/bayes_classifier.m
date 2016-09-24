@@ -132,6 +132,8 @@ for bins = 1:4
     bar(flower)
     text = sprintf('Bin k = %d',bins*5);
     title(text);
+    flowers={'Sentosa'; 'Versicolor'; 'Virginica' };
+        set(gca,'xticklabel',flowers)
 end
 
 
