@@ -4,7 +4,9 @@
 clear all; clc;
 
 heart = dlmread('heart.txt');
-hLength = length(heart);
+median = heart(1,:);        % Get the median : the first row of data
+heart(1,:) = [];            % Remove the first row of data
+hLength = length(heart);    % Calculate length of the data
 
 % first generate binary classifier from data
 S = cell(hLength, 2);
@@ -22,7 +24,7 @@ alpha = zeros(hLength, 1);
 % calculate weight vector TODO
 w = 0;
 for n = i:hLength
-    w = w + alpha(n)*S(n, 2)*S(n, 1);   % this makes no sense because xi is an
+%     w = w + alpha(n)*S(n, 2)*S(n, 1);   % this makes no sense because xi is an
                                         % array?
 end
 
