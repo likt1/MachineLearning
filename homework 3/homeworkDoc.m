@@ -57,7 +57,7 @@ end
 w = sum(weightV)
 
 %calculate KKT conditions TODO
-% IDK what that equation is anymore
+pickX1X2;
 
 % This was as far as I got
 
