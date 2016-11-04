@@ -7,6 +7,8 @@ heart = dlmread('heart.txt');
 median = heart(1,:);        % Get the median : the first row of data
 heart(1,:) = [];            % Remove the first row of data
 hLength = length(heart);    % Calculate length of the data
+colNum = length(heart(1,:));% Calculate num of columns
+b = 0;                      %
 
 % first generate binary classifier from data
 S = cell(hLength, 2);
@@ -25,7 +27,7 @@ alphaSum = sum(cell2mat(S(:,2)));
 n = abs(alphaSum);
 while n ~= 0
     randIdx = ceil(rand * hLength);
-    idxClass = cell2mat(S(randIdx, 2));
+    idxClass = S{randIdx, 2};
     if (alphaSum > 0 && idxClass < 0) || (alphaSum < 0 && idxClass > 0)
         alpha(randIdx) = alpha(randIdx) + 1;
         n = n - 1;
@@ -45,11 +47,14 @@ end
 dot(alpha, cell2mat(S(:,2)))
 
 % calculate weight vector TODO
-w = 0;
-for n = 1:hLength
-%     w = w + alpha(n)*S(n, 2)*S(n, 1);   % this makes no sense because xi is an
-                                        % array?
+weightV = zeros(colNum, 1);
+for n = 1:colNum
+    for idx = 1:hLength
+        weightV(n) = weightV(n) + alpha(idx)*S{idx,2}*S{idx,1}(n);
+    end
 end
+
+w = sum(weightV)
 
 %calculate KKT conditions TODO
 % IDK what that equation is anymore
