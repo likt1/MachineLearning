@@ -12,14 +12,23 @@ hLength = length(heart);    % Calculate length of the data
 S = cell(hLength, 2);
 for n = 1:hLength
     S(n, 1) = {heart(n, :)};
-    S(n, 2) = {binaryClassifier(heart(n, :))}; % TODO
+    S(n, 2) = {binaryClassifier(heart(n, :), median)}; % TODO
 end
 
 % then init alpha randomly TODO
 % with the constraint that the dot product of the binary classifiers y with
 % alpha = 0
 % from the assignment sum( i = 1:length , yi*ai) = 0
-alpha = zeros(hLength, 1);
+alpha = ones(hLength, 1);
+alphaSum = dot(alpha, S(1,:));
+n = abs(alphaSum);
+while n ~= 0 % NEED TESTS
+    randNum = rand * hLength;
+    if alphaSum > 0 && S(1, randNum) < 0 || alphaSum < 0 && S(1, randNum) > 0
+        alpha(randNum) = alpha(randNum) + 1;
+        n = n - 1;
+    end
+end
 
 % calculate weight vector TODO
 w = 0;
