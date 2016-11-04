@@ -15,24 +15,38 @@ for n = 1:hLength
     S(n, 2) = {binaryClassifier(heart(n, :), median)}; % TODO
 end
 
-% then init alpha randomly TODO
+% then init alpha randomly (Really dumb implementation)
 % with the constraint that the dot product of the binary classifiers y with
 % alpha = 0
 % from the assignment sum( i = 1:length , yi*ai) = 0
 alpha = ones(hLength, 1);
-alphaSum = dot(alpha, S(1,:));
+alphaSum = sum(cell2mat(S(:,2)));
+%alphaSum = dot(alpha, cell2mat(S(:,2)));
 n = abs(alphaSum);
-while n ~= 0 % NEED TESTS
-    randNum = rand * hLength;
-    if alphaSum > 0 && S(1, randNum) < 0 || alphaSum < 0 && S(1, randNum) > 0
-        alpha(randNum) = alpha(randNum) + 1;
+while n ~= 0
+    randIdx = ceil(rand * hLength);
+    idxClass = cell2mat(S(randIdx, 2));
+    if (alphaSum > 0 && idxClass < 0) || (alphaSum < 0 && idxClass > 0)
+        alpha(randIdx) = alpha(randIdx) + 1;
         n = n - 1;
+    % comment this bottom section out to remove negative alpha numbers
+    elseif (alphaSum > 0 && idxClass > 0) || (alphaSum < 0 && idxClass > 0)
+        if alpha(randIdx) == 1 && n > 1
+            alpha(randIdx) = alpha(randIdx) - 2;
+            n = n - 2;
+        else
+            alpha(randIdx) = alpha(randIdx) - 1;
+            n = n - 1;
+        end
+    % end block
     end
 end
+% check
+dot(alpha, cell2mat(S(:,2)))
 
 % calculate weight vector TODO
 w = 0;
-for n = i:hLength
+for n = 1:hLength
 %     w = w + alpha(n)*S(n, 2)*S(n, 1);   % this makes no sense because xi is an
                                         % array?
 end
