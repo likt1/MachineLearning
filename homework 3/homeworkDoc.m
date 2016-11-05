@@ -41,21 +41,13 @@ correct = zeros(trLength, 1);
 num = 1;                    % test code so that this only runs once
 while num == 1              % test code so that this only runs once
     num = num - 1;          % test code so that this only runs once
-    % calculate weight vector
-    % optimize with matrix operations TODO
-    weightV = zeros(colNum, 1);
-    for n = 1:colNum
-        for idx = 1:trLength
-            weightV(n) = weightV(n) + alpha(idx)*S{idx,2}*S{idx,1}(n);
-        end
-    end
     
-    % calculate KKT
-    % optimize with matrix operations TODO
-    KKTV = zeros(colNum, 1);
-    for idx = 1:trLength
-        KKTV(idx) = alpha(idx)*(S{idx,2}*(sum(weightV'.*S{idx,1}) + b) - 1);
-    end
+    % calculate weight vector
+    weightV = (alpha.*cell2mat(S(:,2)))'*cell2mat(S(:,1));
+    weightV = weightV';
+    
+    % calculate KKT    
+    KKTV = ((cell2mat(S(:,1))*weightV + b).*cell2mat(S(:,2)) - 1).*alpha;
     
     % pick x1
     [~, i1] = max(KKTV);
@@ -74,10 +66,15 @@ while num == 1              % test code so that this only runs once
     %}
     
     % calculate abs(small e) vector
-    eV = zeros(trLength, 1);
+    %eV = zeros(trLength, 1);
+    EV = zeros(trLength, 1);
     for i = 1:trLength
-        eV(i) = smallE(i);
+        %eV(i) = smallE(i, S, alpha, i1);
+        %eV(i) = E(i1, S, alpha, b) - E(i, S, alpha, b);
+        EV(i) = sum((cell2mat(S(:,1))*S{i,1}').*cell2mat(S(:,2)).*alpha) + b - S{i,2};
     end
+    
+    eV = EV(i1) - EV;
     
     % pick x2
     [~, i2] = max(abs(eV));
@@ -88,40 +85,34 @@ while num == 1              % test code so that this only runs once
     
     % update alpha 2
     oldAlpha2 = alpha(i2);
-    alpha(i2) = alpha(i2) + (S{i2, 2}*eV(i2))/k;
+    alpha(i2) = oldAlpha2 + (S{i2, 2}*eV(i2))/k;
     
     % update alpha 1
     alpha(i1) = alpha(i1) + S{i1, 2}*S{i2, 2}*(oldAlpha2 - alpha(i2));
+    
+    % simplify 
+    alpha(alpha < epsilon) = 0;
+    
+    % calculate new b
+    alphaGT0 = find(alpha > 0);
+    ialphaGT0 = alphaGT0(ceil(rand*length(alphaGT0)));
+    b = 1/S{ialphaGT0, 2} - dot(weightV, S{ialphaGT0, 1});
+    
+    % test classification
+    SVMValues = zeros(trLength, 1);
+    prediction = zeros(trLength, 1);
+    for i = 1:trLength
+        SVMValues(i) = E(i, S, alpha, b);
+    end
+    
+    prediction(SVMValues < 0) = -1;
+    prediction(SVMValues >= 0) = 1;
+    
+    correct = prediction == cell2mat(S(:,2));
 end
-
-%calculate KKT conditions TODO
-%pickX1X2;
-
-% This was as far as I got
 
 %{
 directly from assignment
-4. Pick x1, x2:
-(a) Let i1 = argmaxi=1,...,lKKT(i).
-(b) Pick x1 = xi1 .
-(c) Calculate e(i) = E(1) ? E(i) = Pl
-j=1 ?jyj(Kj1 ? Kji) + yi ? y1Kij
-(d) Let i2 = argmaxi|e(i)|.
-(e) Pick x2 = xi2 .
-(f) Calculate k = K11 + K22 ? 2 ? K12
-5. Update ?2:
-?new
-2 = ?old
-2 +
-y2E(2)
-k
-6. Update ?1:
-?new
-1 = ?old
-1 + y1y2(?old
-2 ? ?new
-2 )
-7. For i = 1, . . . , l, if ?i < ?, ?i ? 0;
 8. Select ?i > 0, calculate b (from KKT conditions)
 9. Test for classification;
 10. Repeat from Step 2. until classified.

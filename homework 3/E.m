@@ -1,5 +1,4 @@
 %% E(i, dataset, alpha, b)
-% WE DONT USE THIS CURRENTLY
 % Calculates the E for datapoint 'i' in cell array 'dataset'
 % in relation to alpha array 'alpha' and bias 'b'
 %   where for point x 
