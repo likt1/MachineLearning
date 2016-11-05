@@ -1,5 +1,5 @@
 %% KKT(index, alphaV, datasetCell, bias, weight)
-%
+%   WE DONT USE THIS CURRENTLY
 %%
 function out = KKT(i, alpha, dataset, b, w)
     col = 1;            % figure out if need to do all columns and sum

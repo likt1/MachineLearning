@@ -8,56 +8,64 @@ median = heart(1,:);        % Get the median : the first row of data
 heart(1,:) = [];            % Remove the first row of data
 hLength = length(heart);    % Calculate length of the data
 colNum = length(heart(1,:));% Calculate num of columns
-b = 0;                      %
+b = 0;                      % bias is initially 0
 
-% first generate binary classifier from data
-S = cell(hLength, 2);
+% Set the number of tests from the training set
+teLength = 50;                  % testing length
+if teLength > hLength
+    teLength = 50;
+end
+trLength = hLength - teLength;  % training length
+
+% generate training and testing cell arrays of datapoints and binary classifiers
+S = cell(trLength, 2);
+Stest = cell(teLength, 2);
 for n = 1:hLength
-    S(n, 1) = {heart(n, :)};
-    S(n, 2) = {binaryClassifier(heart(n, :), median)}; % TODO
+    if n <= trLength
+        S(n, 1) = {heart(n, :)};
+        S(n, 2) = {binaryClassifier(heart(n, :), median)};
+    else
+        Stest(n - trLength, 1) = {heart(n, :)};
+        Stest(n - trLength, 2) = {binaryClassifier(heart(n, :), median)};
+    end
 end
 
-% then init alpha randomly (Really dumb implementation)
-% with the constraint that the dot product of the binary classifiers y with
-% alpha = 0
-% from the assignment sum( i = 1:length , yi*ai) = 0
-alpha = ones(hLength, 1);
-alphaSum = sum(cell2mat(S(:,2)));
-%alphaSum = dot(alpha, cell2mat(S(:,2)));
-n = abs(alphaSum);
-while n ~= 0
-    randIdx = ceil(rand * hLength);
-    idxClass = S{randIdx, 2};
-    if (alphaSum > 0 && idxClass < 0) || (alphaSum < 0 && idxClass > 0)
-        alpha(randIdx) = alpha(randIdx) + 1;
-        n = n - 1;
-    % comment this bottom section out to remove negative alpha numbers
-    elseif (alphaSum > 0 && idxClass > 0) || (alphaSum < 0 && idxClass > 0)
-        if alpha(randIdx) == 1 && n > 1
-            alpha(randIdx) = alpha(randIdx) - 2;
-            n = n - 2;
-        else
-            alpha(randIdx) = alpha(randIdx) - 1;
-            n = n - 1;
+% gen initial alpha and vals array
+%alpha = zeros(trLength, 1);
+alpha = ones(trLength, 1); % test alpha
+vals = zeros(trLength, 1);
+
+correct = zeros(trLength, 1);
+%while sum(correct) < trLength
+num = 1;                    % test code so that this only runs once
+while num == 1              % test code so that this only runs once
+    num = num - 1;          % test code so that this only runs once
+    % calculate weight vector
+    % optimize with matrix operations TODO
+    weightV = zeros(colNum, 1);
+    for n = 1:colNum
+        for idx = 1:trLength
+            weightV(n) = weightV(n) + alpha(idx)*S{idx,2}*S{idx,1}(n);
         end
-    % end block
     end
-end
-% check
-dot(alpha, cell2mat(S(:,2)))
-
-% calculate weight vector TODO
-weightV = zeros(colNum, 1);
-for n = 1:colNum
-    for idx = 1:hLength
-        weightV(n) = weightV(n) + alpha(idx)*S{idx,2}*S{idx,1}(n);
+    
+    % calculate KKT
+    % optimize with matrix operations TODO
+    KKTV = zeros(colNum, 1);
+    for idx = 1:trLength
+        KKTV(idx) = alpha(idx)*(S{idx,2}*(sum(weightV'.*S{idx,1}) + b) - 1);
     end
+    
+    % pick x1 and x2
+    [v, i1] = max(KKTV);
+    x1 = S{i1, 1};
+    
+    
 end
 
-w = sum(weightV)
 
 %calculate KKT conditions TODO
-pickX1X2;
+%pickX1X2;
 
 % This was as far as I got
 
