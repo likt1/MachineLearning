@@ -9,6 +9,7 @@ heart(1,:) = [];            % Remove the first row of data
 hLength = length(heart);    % Calculate length of the data
 colNum = length(heart(1,:));% Calculate num of columns
 b = 0;                      % bias is initially 0
+epsilon = 1.0e-12;          % define epsilon, we don't know where this comes from
 
 % Set the number of tests from the training set
 teLength = 50;                  % testing length
@@ -56,13 +57,42 @@ while num == 1              % test code so that this only runs once
         KKTV(idx) = alpha(idx)*(S{idx,2}*(sum(weightV'.*S{idx,1}) + b) - 1);
     end
     
-    % pick x1 and x2
-    [v, i1] = max(KKTV);
+    % pick x1
+    [~, i1] = max(KKTV);
     x1 = S{i1, 1};
     
+    %{
+    % calculate abs(small e) vector WE DONT USE THIS
+    eV = zeros(trLength, 1);
+    for i = 1:trLength
+        eV(i) = abs(E(1, S, alpha, b) - E(i, S, alpha, b));
+    end
     
+    % pick x1
+    [~, i2] = max(eV);
+    x2 = S{i2, 1};
+    %}
+    
+    % calculate abs(small e) vector
+    eV = zeros(trLength, 1);
+    for i = 1:trLength
+        eV(i) = smallE(i);
+    end
+    
+    % pick x2
+    [~, i2] = max(abs(eV));
+    x2 = S{i2, 1};
+    
+    % calculate k
+    k = kernel(x1, x1) + kernel(x2, x2) - 2*kernel(x1, x2);
+    
+    % update alpha 2
+    oldAlpha2 = alpha(i2);
+    alpha(i2) = alpha(i2) + (S{i2, 2}*eV(i2))/k;
+    
+    % update alpha 1
+    alpha(i1) = alpha(i1) + S{i1, 2}*S{i2, 2}*(oldAlpha2 - alpha(i2));
 end
-
 
 %calculate KKT conditions TODO
 %pickX1X2;
