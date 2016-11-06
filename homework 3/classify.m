@@ -10,7 +10,7 @@ function [classification, SVMvalues] = classify(dataset, test, alpha, b)
     classification = zeros(numData, 1);
     
     for i = 1:numData
-        SVMvalues(i) = sum((data*testData(i,:)').*classifier.*alpha) + b - classifier(i);
+        SVMvalues(i) = sum((data*testData(i,:)').*classifier.*alpha) + b;
     end
     
     classification(SVMvalues >= 0) = 1;
