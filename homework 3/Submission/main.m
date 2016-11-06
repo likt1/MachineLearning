@@ -21,7 +21,7 @@ heart(1,:) = [];                % Remove the first row of data
 hLength = length(heart);        % Calculate length of the data
 colNum = length(heart(1,:));    % Calculate num of columns
 
-C = 1000;                      % define C, see http://stats.stackexchange.com/a/159051
+C = 10000;                      % define C, see http://stats.stackexchange.com/a/159051
 tol = 1.0e-12;                  % define tolerance, we don't know where this comes from but should be small
 
 % Set the number of tests from the training set
@@ -52,7 +52,7 @@ alpha = ones(trLength, 1);
 b = 0;
 
 % run loop x amount of times, the more times the more detailed alpha becomes
-num = 1000;
+num = 500;
 while num > 0
     num = num - 1;
     
@@ -139,13 +139,13 @@ while num > 0
     
     % test the accuracy of our alpha and bias values
     correct = prediction == cell2mat(S(:, 2));
-    percentCorrect = sum(correct)/trLength * 100;
+    sum(correct);
 end
 
 % Actually do test
 [testPred testSVMValues] = classify(S, Stest, alpha, b);
-testCorrect = testPred == cell2mat(Stest(:, 2));
-testPerCorrect = sum(testCorrect)/teLength * 100; % how accurate our alpha and bias are
+testCorrect = prediction == cell2mat(Stest(:, 2));
+sum(testCorrect); % how accurate our alpha and bias are
 
 %{
 references:
